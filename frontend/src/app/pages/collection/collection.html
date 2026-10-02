@@ -1,0 +1,279 @@
+<div class="mx-auto max-w-6xl p-6">
+
+  <!-- Header -->
+  <div class="mb-8 flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-bold">
+        My Collection
+      </h1>
+
+      <p class="mt-1 text-gray-500">
+        {{ items().length }} Pokémon
+      </p>
+    </div>
+
+    <a
+      routerLink="/pokemon"
+      class="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
+    >
+      Find Pokémon
+    </a>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="py-12 text-center text-gray-500">
+      Loading collection...
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error()) {
+    <div
+      class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700"
+    >
+      {{ error() }}
+    </div>
+  }
+
+  <!-- Empty -->
+  @if (!loading() && items().length === 0) {
+    <div class="rounded-xl border bg-white p-12 text-center">
+      <h2 class="text-xl font-semibold">
+        Your collection is empty
+      </h2>
+
+      <p class="mt-2 text-gray-500">
+        Search for a Pokémon and add it to your collection.
+      </p>
+
+      <a
+        routerLink="/pokemon"
+        class="mt-6 inline-block rounded-lg bg-blue-600 px-5 py-2.5 font-medium text-white hover:bg-blue-700"
+      >
+        Search Pokémon
+      </a>
+    </div>
+  }
+
+  <!-- Collection -->
+  @if (!loading() && items().length > 0) {
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+      @for (item of items(); track item.id) {
+
+        <div class="overflow-hidden rounded-xl border bg-white shadow-sm">
+
+          <!-- Image -->
+          <div class="bg-gray-100 p-6 text-center">
+
+            @if (item.imageUrl) {
+              <img
+                [src]="item.imageUrl"
+                [alt]="item.name"
+                class="mx-auto h-40 w-40 object-contain"
+              />
+            }
+
+            <h2 class="mt-3 text-xl font-bold capitalize">
+              {{ item.name }}
+            </h2>
+
+            <p class="text-sm text-gray-500">
+              #{{ item.externalId }}
+            </p>
+
+          </div>
+
+          <!-- Content -->
+          <div class="p-5">
+
+            @if (editingId() === item.id) {
+
+              <!-- EDIT MODE -->
+
+              <div class="space-y-4">
+
+                <!-- Rating -->
+                <div>
+                  <label
+                    for="rating-{{ item.id }}"
+                    class="mb-1 block text-sm font-medium text-gray-700"
+                  >
+                    Rating
+                  </label>
+
+                  <select
+                    id="rating-{{ item.id }}"
+                    [value]="editRating()"
+                    (change)="setRating($event)"
+                    class="w-full rounded-lg border px-3 py-2"
+                  >
+                    @for (rating of [1, 2, 3, 4, 5]; track rating) {
+                      <option [value]="rating">
+                        {{ rating }} / 5
+                      </option>
+                    }
+                  </select>
+                </div>
+
+                <!-- Favorite -->
+                <label class="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    [checked]="editFavorite()"
+                    (change)="setFavorite($event)"
+                    class="h-4 w-4"
+                  />
+
+                  <span class="text-sm font-medium">
+                    Favorite
+                  </span>
+                </label>
+
+                <!-- Notes -->
+                <div>
+                  <label
+                    for="notes-{{ item.id }}"
+                    class="mb-1 block text-sm font-medium text-gray-700"
+                  >
+                    Notes
+                  </label>
+
+                  <textarea
+                    id="notes-{{ item.id }}"
+                    [value]="editNotes()"
+                    (input)="setNotes($event)"
+                    rows="4"
+                    maxlength="2000"
+                    class="w-full rounded-lg border px-3 py-2"
+                    placeholder="Add some notes..."
+                  ></textarea>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex gap-2">
+
+                  <button
+                    type="button"
+                    (click)="saveEdit(item)"
+                    [disabled]="saving()"
+                    class="flex-1 rounded-lg bg-green-600 px-4 py-2 font-medium text-white hover:bg-green-700 disabled:opacity-50"
+                  >
+                    @if (saving()) {
+                      Saving...
+                    } @else {
+                      Save
+                    }
+                  </button>
+
+                  <button
+                    type="button"
+                    (click)="cancelEdit()"
+                    [disabled]="saving()"
+                    class="rounded-lg border px-4 py-2 font-medium hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+
+                </div>
+
+              </div>
+
+            } @else {
+
+              <!-- DISPLAY MODE -->
+
+              <!-- Rating -->
+              <div class="mb-3">
+                <span class="text-sm text-gray-500">
+                  Rating
+                </span>
+
+                <div class="mt-1 text-lg">
+                  @for (star of [1, 2, 3, 4, 5]; track star) {
+                    <span
+                      [class.text-yellow-400]="star <= item.rating"
+                      [class.text-gray-300]="star > item.rating"
+                    >
+                      ★
+                    </span>
+                  }
+                </div>
+              </div>
+
+              <!-- Favorite -->
+              <div class="mb-3">
+                @if (item.favorite) {
+                  <span
+                    class="inline-flex rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-700"
+                  >
+                    ♥ Favorite
+                  </span>
+                } @else {
+                  <span
+                    class="inline-flex rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-600"
+                  >
+                    Not a favorite
+                  </span>
+                }
+              </div>
+
+              <!-- Notes -->
+              @if (item.notes) {
+                <div class="mb-4">
+                  <p class="text-sm text-gray-500">
+                    Notes
+                  </p>
+
+                  <p class="mt-1 whitespace-pre-wrap text-sm text-gray-700">
+                    {{ item.notes }}
+                  </p>
+                </div>
+              }
+
+              <!-- Actions -->
+              <div class="flex gap-2 border-t pt-4">
+
+                <a
+                  [routerLink]="['/pokemon', item.externalId]"
+                  class="flex-1 rounded-lg border px-4 py-2 text-center text-sm font-medium hover:bg-gray-50"
+                >
+                  Details
+                </a>
+
+                <button
+                  type="button"
+                  (click)="startEdit(item)"
+                  class="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                >
+                  Edit
+                </button>
+
+                <button
+                  type="button"
+                  (click)="remove(item)"
+                  [disabled]="deletingId() === item.id"
+                  class="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
+                >
+                  @if (deletingId() === item.id) {
+                    ...
+                  } @else {
+                    Remove
+                  }
+                </button>
+
+              </div>
+
+            }
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+  }
+
+</div>

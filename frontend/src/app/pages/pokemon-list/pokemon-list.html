@@ -1,0 +1,39 @@
+<div class="mx-auto max-w-5xl p-6">
+  <h1 class="mb-6 text-3xl font-bold">Pokémon</h1>
+
+  <input
+    type="text"
+    [formControl]="searchControl"
+    placeholder="Search Pokémon..."
+    class="mb-6 w-full rounded-lg border px-4 py-3 outline-none focus:ring-2"
+  />
+
+  @if (loading()) {
+    <p class="text-gray-500">Loading...</p>
+  }
+
+  @if (error()) {
+    <p class="text-red-600">
+      {{ error() }}
+    </p>
+  }
+
+  @if (!loading() && results().length === 0) {
+    <p class="text-gray-500">Search for a Pokémon.</p>
+  }
+
+  <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
+    @for (pokemon of results(); track pokemon.externalId) {
+      <a
+        [routerLink]="['/pokemon', pokemon.externalId]"
+        class="rounded-lg border p-4 transition hover:shadow-md"
+      >
+        <h2 class="font-semibold capitalize">
+          {{ pokemon.name }}
+        </h2>
+
+        <p class="text-sm text-gray-500">#{{ pokemon.externalId }}</p>
+      </a>
+    }
+  </div>
+</div>

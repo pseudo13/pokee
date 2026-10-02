@@ -1,0 +1,39 @@
+import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+
+import { inject } from '@angular/core';
+
+import { catchError, throwError } from 'rxjs';
+
+import { Router } from '@angular/router';
+
+import { AuthService } from '../services/auth.service';
+
+export const authInterceptor: HttpInterceptorFn = (request, next) => {
+  const authService = inject(AuthService);
+
+  const router = inject(Router);
+
+  const token = authService.getToken();
+
+  if (!token || !request.url.startsWith('http://localhost:8088/api/')) {
+    return next(request);
+  }
+
+  const authenticatedRequest = request.clone({
+    setHeaders: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return next(authenticatedRequest).pipe(
+    catchError((error: HttpErrorResponse) => {
+      if (error.status === 401) {
+        authService.logout();
+
+        void router.navigate(['/login']);
+      }
+
+      return throwError(() => error);
+    }),
+  );
+};

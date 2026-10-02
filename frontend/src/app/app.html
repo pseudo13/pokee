@@ -1,0 +1,21 @@
+<nav class="border-b">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+    <a routerLink="/pokemon" class="font-bold"> Pokémon Collection </a>
+
+    <div class="flex items-center gap-4">
+      <a routerLink="/pokemon" class="text-sm"> Pokémon </a>
+
+      @if (authService.isAuthenticated()) {
+        <a routerLink="/collection" class="text-sm"> My Collection </a>
+
+        <button type="button" (click)="logout()" class="text-sm underline">Logout</button>
+      } @else {
+        <a routerLink="/login" class="text-sm"> Login </a>
+
+        <a routerLink="/register" class="text-sm"> Register </a>
+      }
+    </div>
+  </div>
+</nav>
+
+<router-outlet />

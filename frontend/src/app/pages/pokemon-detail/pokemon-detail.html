@@ -1,0 +1,114 @@
+<div class="mx-auto max-w-4xl p-6">
+  <!-- Back -->
+  <a routerLink="/pokemon" class="mb-6 inline-block text-sm text-blue-600 hover:underline">
+    ← Back to Pokémon
+  </a>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="py-12 text-center text-gray-500">Loading Pokémon...</div>
+  }
+
+  <!-- Error -->
+  @if (error()) {
+    <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
+      {{ error() }}
+    </div>
+  }
+
+  <!-- Pokémon -->
+  @if (pokemon(); as p) {
+    <div class="overflow-hidden rounded-xl border bg-white shadow-sm">
+      <!-- Header -->
+      <div class="bg-gray-100 p-8 text-center">
+        @if (p.imageUrl) {
+          <img [src]="p.imageUrl" [alt]="p.name" class="mx-auto h-64 w-64 object-contain" />
+        }
+
+        <h1 class="mt-4 text-4xl font-bold capitalize">
+          {{ p.name }}
+        </h1>
+
+        <p class="mt-2 text-gray-500">#{{ p.externalId }}</p>
+      </div>
+
+      <!-- Details -->
+      <div class="grid gap-4 p-6 sm:grid-cols-2">
+        <div class="rounded-lg bg-gray-50 p-4">
+          <div class="text-sm text-gray-500">Height</div>
+
+          <div class="mt-1 text-xl font-semibold">
+            {{ p.height }}
+          </div>
+        </div>
+
+        <div class="rounded-lg bg-gray-50 p-4">
+          <div class="text-sm text-gray-500">Weight</div>
+
+          <div class="mt-1 text-xl font-semibold">
+            {{ p.weight }}
+          </div>
+        </div>
+
+        <div class="rounded-lg bg-gray-50 p-4">
+          <div class="text-sm text-gray-500">External ID</div>
+
+          <div class="mt-1 text-xl font-semibold">
+            {{ p.externalId }}
+          </div>
+        </div>
+
+        <div class="rounded-lg bg-gray-50 p-4">
+          <div class="text-sm text-gray-500">Local ID</div>
+
+          <div class="mt-1 text-xl font-semibold">
+            {{ p.id }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Collection -->
+      <div class="border-t p-6">
+        @if (authService.isAuthenticated()) {
+          @if (added()) {
+            <div class="rounded-lg bg-green-50 p-4 text-green-700">
+              Pokémon added to your collection.
+
+              <a routerLink="/collection" class="ml-2 font-medium underline"> View collection </a>
+            </div>
+          } @else {
+            <button
+              type="button"
+              (click)="addToCollection()"
+              [disabled]="adding()"
+              class="rounded-lg bg-blue-600 px-5 py-2.5 font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              @if (adding()) {
+                Adding...
+              } @else {
+                Add to Collection
+              }
+            </button>
+
+            @if (addError()) {
+              <p class="mt-3 text-sm text-red-600">
+                {{ addError() }}
+              </p>
+            }
+          }
+        } @else {
+          <div class="rounded-lg bg-gray-50 p-4">
+            <p class="text-gray-600">Log in to add Pokémon to your collection.</p>
+
+            <a
+              routerLink="/login"
+              class="mt-3 inline-block rounded-lg bg-blue-600 px-5 py-2.5 font-medium text-white hover:bg-blue-700"
+            >
+              Login
+            </a>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>
