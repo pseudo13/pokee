@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:sqlite:pokemon.db
+    driver-class-name: org.sqlite.JDBC
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.community.dialect.SQLiteDialect
+
+  jackson:
+    default-property-inclusion: non_null
+
+app:
+  jwt:
+    secret: "change-this-secret-key-to-a-long-random-value-at-least-256-bits"
+    expiration: 86400000
+
+server:
+  port: 8088
