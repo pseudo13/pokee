@@ -31,7 +31,7 @@ if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
 Write-Host "Java, Node.js and npm found." -ForegroundColor Green
 
 
-# 2b. Ensure JAVA_HOME is set (mvnw.cmd needs it)
+# 2. Ensure JAVA_HOME is set (mvnw.cmd needs it)
 Write-Host ""
 Write-Host "[2/9] Ensuring JAVA_HOME ... " -ForegroundColor Yellow
 
@@ -89,43 +89,18 @@ if (-not $env:JAVA_HOME) {
 Write-Host "done." -ForegroundColor Green
 
 
-# 3. Check / prepare backend and frontend repos
+# 3. Check backend and frontend directories exist
 Write-Host ""
-Write-Host "[3/9] Checking for backend/frontend repos..." -ForegroundColor Yellow
+Write-Host "[3/9] Checking for backend/frontend directories..." -ForegroundColor Yellow
 
-$githubBase = "https://github.com/pseudo13"
-$needClone = @()
-
-foreach ($repo in @("backend", "frontend")) {
-    $dir = Join-Path $root $repo
-    if (-not (Test-Path $dir)) {
-        $needClone += $repo
+foreach ($dirName in @("backend", "frontend")) {
+    $dir = Join-Path $root $dirName
+    if (Test-Path $dir) {
+        Write-Host "$dirName found." -ForegroundColor Green
     } else {
-        Write-Host "$repo repo found." -ForegroundColor Green
-    }
-}
-
-if ($needClone.Count -gt 0) {
-    Write-Host ""
-    Write-Host "Missing repo(s): $($needClone -join ', ')`n" -ForegroundColor Red
-    Write-Host "Cloning automatically..." -ForegroundColor Yellow
-    foreach ($repo in $needClone) {
-        $url = "$($githubBase)/$repo.git"
-        $targetDir = Join-Path $root $repo
-        Start-Process git -ArgumentList "clone", $url, $targetDir -NoNewWindow -Wait
-    }
-} else {
-    Write-Host ""
-    Write-Host "Fetching latest changes..." -ForegroundColor Yellow
-    foreach ($repo in @("backend", "frontend")) {
-        $dir = Join-Path $root $repo
-        Push-Location $dir
-        try {
-            git fetch --all 2>$null
-            Write-Host "$repo fetched." -ForegroundColor Green
-        } finally {
-            Pop-Location
-        }
+        Write-Host "`nERROR: $dirName directory not found in $root" -ForegroundColor Red
+        Write-Host "Run 'git pull' to fetch the latest code, or clone this repo." -ForegroundColor Yellow
+        exit 1
     }
 }
 

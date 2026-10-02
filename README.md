@@ -99,36 +99,10 @@ Each user has their own collection. The client does not provide a user ID; the b
 - Java 21
 - Node.js 20+
 - PowerShell
-- Git (for cloning repos — required on first run)
-
-> [!IMPORTANT]  
-> **Clone the backend and frontend repos before running.** This script does not contain those directories; it expects `backend/` and `frontend/` as sibling folders. See [First Time Setup](#first-time-setup).
-
-## First Time Setup
-
-Before running the app, clone the backend and frontend repositories as sibling folders alongside `run.ps1`:
-
-```powershell
-git clone https://github.com/pseudo13/backend.git
-git clone https://github.com/pseudo13/frontend.git
-```
-
-This is a **one-time step** — after that, `run.ps1` will fetch the latest changes automatically.
-
-## Clone
-
-Each component lives in its own directory. Clone the repo here, or just run `run.ps1` and it will do everything for you.
-
-```text
-Pokee/
-├── backend/    ← https://github.com/pseudo13/backend  (clone into this directory)
-├── frontend/   ← https://github.com/pseudo13/frontend (clone into this directory)
-└── run.ps1
-```
 
 ## Run
 
-If you cloned manually, from the project root:
+From the project root:
 
 ```powershell
 .\run.ps1
@@ -137,7 +111,7 @@ If you cloned manually, from the project root:
 The script:
 
 1. Checks that **Java 21, Node.js 20+ and npm** are installed.
-2. Verifies the **backend and frontend** repos are present (clones them if missing, fetches otherwise).
+2. Verifies the **backend and frontend** directories are present.
 3. Installs frontend dependencies if `node_modules` does not exist.
 4. Starts the **Spring Boot backend**.
 5. Starts the **Angular frontend**.
