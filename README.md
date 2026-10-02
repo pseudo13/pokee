@@ -3,6 +3,7 @@
 A small Pokémon collection app built with **Angular** and **Spring Boot**.
 
 ![Pokee Screenshot](docs/screenshot.png)
+![Pokee Screenshot](docs/screenshot_2.png)
 
 ## Features
 
@@ -167,6 +168,7 @@ Pokee/
 │
 ├── docs/
 │   └── screenshot.png
+|   └── screenshot_2.png
 ├── run.ps1
 └── README.md
 ```
