@@ -115,9 +115,20 @@ git clone https://github.com/pseudo13/frontend.git
 
 This is a **one-time step** — after that, `run.ps1` will fetch the latest changes automatically.
 
+## Clone
+
+Each component lives in its own directory. Clone the repo here, or just run `run.ps1` and it will do everything for you.
+
+```text
+Pokee/
+├── backend/    ← https://github.com/pseudo13/backend  (clone into this directory)
+├── frontend/   ← https://github.com/pseudo13/frontend (clone into this directory)
+└── run.ps1
+```
+
 ## Run
 
-From the project root:
+If you cloned manually, from the project root:
 
 ```powershell
 .\run.ps1
